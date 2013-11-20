@@ -2,16 +2,16 @@
 
 <root>
 	<songs>
-		<song name = "beethoven" mood = "relax" id = "1">../res/songs/beethoven.mp3</song>
-		<song name = "foobar" mood = "relax" id = "2">../res/songs/beethoven.mp3</song>
-		<song name = "foobar" mood = "resting" id = "3">../res/songs/beethoven.mp3</song>
-		<song name = "foobar" mood = "resting" id = "4">../res/songs/beethoven.mp3</song>
-		<song name = "foobar" mood = "excited" id = "5">../res/songs/beethoven.mp3</song>
-		<song name = "foobar" mood = "excited" id = "6">../res/songs/beethoven.mp3</song>
-		<song name = "foobar" mood = "angry" id = "7">../res/songs/beethoven.mp3</song>
-		<song name = "foobar" mood = "angry" id = "8">../res/songs/beethoven.mp3</song>
-		<song name = "foobar" mood = "cooldown" id = "9">../res/songs/beethoven.mp3</song>
-		<song name = "foobar" mood = "cooldown" id = "10">../res/songs/beethoven.mp3</song>
+		<song name = "beethoven" mood = "relax" id = "1">./res/songs/beethoven.mp3</song>
+		<song name = "foobar" mood = "relax" id = "2">./res/songs/fake song.mp3</song>
+		<song name = "foobar" mood = "resting" id = "3">./res/songs/beethoven.mp3</song>
+		<song name = "foobar" mood = "resting" id = "4">./res/songs/beethoven.mp3</song>
+		<song name = "foobar" mood = "excited" id = "5">./res/songs/beethoven.mp3</song>
+		<song name = "foobar" mood = "excited" id = "6">./res/songs/beethoven.mp3</song>
+		<song name = "foobar" mood = "angry" id = "7">./res/songs/beethoven.mp3</song>
+		<song name = "foobar" mood = "angry" id = "8">./res/songs/beethoven.mp3</song>
+		<song name = "foobar" mood = "cooldown" id = "9">./res/songs/beethoven.mp3</song>
+		<song name = "foobar" mood = "cooldown" id = "10">./res/songs/beethoven.mp3</song>
 	</songs>
 	<lights>
 		<light mood="resting" portNumber = "01" id = "1"></light>

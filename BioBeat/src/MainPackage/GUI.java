@@ -4,7 +4,11 @@
  */
 package MainPackage;
 
+import java.io.File;
 import java.util.ArrayList;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -23,6 +27,8 @@ public class GUI extends javax.swing.JFrame {
         this.central = cm;
         initComponents();
         initSongsList();
+        initMoodsList();
+
     }
 
     private void initSongsList() {
@@ -32,9 +38,9 @@ public class GUI extends javax.swing.JFrame {
 
         for (int i = 0; i < moodsList.size(); i++) {
             DefaultMutableTreeNode moodNode = new DefaultMutableTreeNode(moodsList.get(i));
-            ArrayList<Playlist.Song> songs = this.central.playlist.getSongsWithMood(moodsList.get(i));
+            ArrayList<Playlist.Song> songs = this.central.getPlaylist().getSongsWithMood(moodsList.get(i));
             for (int j = 0; j < songs.size(); j++) {
-                DefaultMutableTreeNode songNode = new DefaultMutableTreeNode(songs.get(j).getFile().getName(),false);
+                DefaultMutableTreeNode songNode = new DefaultMutableTreeNode(songs.get(j).getFile().getName(), false);
                 moodNode.add(songNode);
             }
             rootNode.add(moodNode);
@@ -43,7 +49,13 @@ public class GUI extends javax.swing.JFrame {
         for (int i = 0; i < this.jSongsList.getRowCount(); i++) {
             this.jSongsList.expandRow(i);
         }
-        
+
+//        if (!this.central.getPlaylist().getErrors().equals("")) {
+//            this.central.displayErrorDialog("The following songs were not found:\n" + this.central.getPlaylist().getErrors());
+//        this.centra clear errors
+//    }
+
+
     }
 
     /**
@@ -61,31 +73,43 @@ public class GUI extends javax.swing.JFrame {
         jPlayButton = new javax.swing.JToggleButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jSongsList = new javax.swing.JTree();
+        jRemoveButton = new javax.swing.JButton();
+        jAddButton = new javax.swing.JButton();
+        jPathField = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jMoodsList = new javax.swing.JComboBox();
+        jLabel2 = new javax.swing.JLabel();
+        jBrowseButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jPrevButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/MainPackage/icon-prev.png"))); // NOI18N
+        jPrevButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/icon-prev.png"))); // NOI18N
 
-        jNextButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/MainPackage/icon-next.png"))); // NOI18N
+        jNextButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/icon-next.png"))); // NOI18N
 
         jPlayButton.setBackground(new java.awt.Color(255, 255, 255));
-        jPlayButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/MainPackage/icon-play.png"))); // NOI18N
+        jPlayButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/icon-play.png"))); // NOI18N
         jPlayButton.setFocusPainted(false);
+        jPlayButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jPlayButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(72, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPrevButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPlayButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jNextButton)
-                .addContainerGap(72, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -98,18 +122,57 @@ public class GUI extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        jSongsList.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jSongsList.setFont(new java.awt.Font("Bodoni MT", 0, 18)); // NOI18N
         jScrollPane1.setViewportView(jSongsList);
+
+        jRemoveButton.setText("Remove Song");
+
+        jAddButton.setText("Add Song");
+        jAddButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jAddButtonActionPerformed(evt);
+            }
+        });
+
+        jPathField.setText("Enter file path here");
+
+        jLabel1.setText("Path:");
+
+        jMoodsList.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "moods list" }));
+
+        jLabel2.setText("Song Mood:");
+
+        jBrowseButton.setText("Browse");
+        jBrowseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBrowseButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPathField, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                        .addComponent(jBrowseButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jMoodsList, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jAddButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRemoveButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -118,18 +181,84 @@ public class GUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE)
-                .addGap(10, 10, 10))
+                .addComponent(jScrollPane1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jAddButton)
+                    .addComponent(jPathField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(jMoodsList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jRemoveButton)
+                    .addComponent(jLabel2)
+                    .addComponent(jBrowseButton))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jPlayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPlayButtonActionPerformed
+        if (!jPlayButton.isSelected()) {
+            jPlayButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/icon-play.png")));
+
+        } else {
+            jPlayButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/icon-pause.png")));
+
+        }
+    }//GEN-LAST:event_jPlayButtonActionPerformed
+
+    private void jAddButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jAddButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jAddButtonActionPerformed
+
+    private void jBrowseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBrowseButtonActionPerformed
+        displayBrowserDialog();
+    }//GEN-LAST:event_jBrowseButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jAddButton;
+    private javax.swing.JButton jBrowseButton;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JComboBox jMoodsList;
     private javax.swing.JButton jNextButton;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField jPathField;
     private javax.swing.JToggleButton jPlayButton;
     private javax.swing.JButton jPrevButton;
+    private javax.swing.JButton jRemoveButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTree jSongsList;
     // End of variables declaration//GEN-END:variables
+
+    private void initMoodsList() {
+        ArrayList<String> moodsList = this.central.getMoodsList();
+        jMoodsList.setModel(new DefaultComboBoxModel(moodsList.toArray()));
+    }
+
+    public void setPathField(String path) {
+        jPathField.setText(path);
+    }
+
+    public void displayBrowserDialog() {
+        JFileChooser jFileChooser = new JFileChooser();
+        jFileChooser.setAcceptAllFileFilterUsed(false);
+        jFileChooser.setFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                if (f.getName().endsWith(".mp3") || f.isDirectory()) {
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public String getDescription() {
+                return "mp3";
+            }
+        });
+        int option = jFileChooser.showOpenDialog(null);
+        if (option == JFileChooser.APPROVE_OPTION) {
+            setPathField(jFileChooser.getSelectedFile().getPath());
+        }
+    }
 }
