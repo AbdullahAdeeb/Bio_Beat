@@ -2,15 +2,17 @@ package MainPackage;
 
 import java.awt.Frame;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileFilter;
 import nu.xom.Builder;
 import nu.xom.Document;
-import nu.xom.Element;
 import nu.xom.Elements;
 
 /*
@@ -25,21 +27,23 @@ public class CentralMain {
 
     private final static String SONGS_XML_PATH = "res/BioBeat_songs.xml";
     private final static String MOODS_XML_PATH = "res/BioBeat_moods.xml";
+    public final static String SONGS_BASE_URL = "d:/songs/";
     private ArrayList<String> moodsList;
     private Playlist playlist;
+    private final GUIRunnable guiRunnable;
 
     CentralMain() {
         Document mDoc = CentralMain.loadXml(MOODS_XML_PATH);
         populateMoodsList(mDoc);
-        
+
         this.playlist = new Playlist(SONGS_XML_PATH);
         if (!this.playlist.getErrors().equals("")) {
             displayErrorDialog("The following songs were not found:\n" + getPlaylist().getErrors());
             this.playlist.clearErrors();
-    }
-        
+        }
+
         /* Create and display the form */
-        GUIRunnable guiRunnable = new GUIRunnable(this);
+        guiRunnable = new GUIRunnable(this);
         guiRunnable.run();
     }
 
@@ -62,16 +66,37 @@ public class CentralMain {
         }
     }
 
-    public void addSong(){
-    
+    public void addSong(String name, String mood) throws Exception {
+        this.playlist.addSong(CentralMain.SONGS_BASE_URL + name, mood);
+        this.guiRunnable.reloadSongsList();
     }
-    
-    public void removeSong(){
-    
+
+    public void removeSong(String song, String mood) {
+        this.playlist.removeSong(song, mood);
+        this.guiRunnable.reloadSongsList();
+
+    }
+
+    protected static void copyFileUsingStream(File source, File dest) throws IOException {
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            is = new FileInputStream(source);
+            os = new FileOutputStream(dest);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+                os.write(buffer, 0, length);
+            }
+        } finally {
+            is.close();
+            os.close();
+        }
     }
     ///////////////////////////////////////////////////
     //            GETTERS AND SETTERS 
     ///////////////////////////////////////////////////
+
     public ArrayList<String> getMoodsList() {
         return moodsList;
     }
@@ -141,6 +166,10 @@ public class CentralMain {
         GUIRunnable(CentralMain central) {
             super();
             this.centralMain = central;
+        }
+
+        private void reloadSongsList() {
+            gui.initSongsList();
         }
 
         @Override

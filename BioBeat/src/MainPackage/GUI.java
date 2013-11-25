@@ -11,6 +11,7 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 /**
  *
@@ -31,7 +32,7 @@ public class GUI extends javax.swing.JFrame {
 
     }
 
-    private void initSongsList() {
+    protected void initSongsList() {
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Moods Playlist");
         DefaultTreeModel dtm = new DefaultTreeModel(rootNode, true);
         ArrayList<String> moodsList = this.central.getMoodsList();
@@ -50,10 +51,6 @@ public class GUI extends javax.swing.JFrame {
             this.jSongsList.expandRow(i);
         }
 
-//        if (!this.central.getPlaylist().getErrors().equals("")) {
-//            this.central.displayErrorDialog("The following songs were not found:\n" + this.central.getPlaylist().getErrors());
-//        this.centra clear errors
-//    }
 
 
     }
@@ -127,6 +124,11 @@ public class GUI extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jSongsList);
 
         jRemoveButton.setText("Remove Song");
+        jRemoveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRemoveButtonActionPerformed(evt);
+            }
+        });
 
         jAddButton.setText("Add Song");
         jAddButton.addActionListener(new java.awt.event.ActionListener() {
@@ -140,6 +142,11 @@ public class GUI extends javax.swing.JFrame {
         jLabel1.setText("Path:");
 
         jMoodsList.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "moods list" }));
+        jMoodsList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMoodsListActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Song Mood:");
 
@@ -208,12 +215,40 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jPlayButtonActionPerformed
 
     private void jAddButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jAddButtonActionPerformed
-        // TODO add your handling code here:
+        File f = new File(jPathField.getText());
+        if (!f.isFile() || !f.exists()) {
+            this.central.displayErrorDialog("The song file path specified is invalid. \nmake sure the song is still there");
+            return;
+        }
+        try {
+            this.central.copyFileUsingStream(f, new File(CentralMain.SONGS_BASE_URL + f.getName()));
+            this.central.addSong(f.getName(), (String) jMoodsList.getSelectedItem());
+        } catch (Exception ex) {
+            System.err.println(ex);
+            this.central.displayErrorDialog("There was an error while loading the song. \nOperation aborted.");
+        }
+
     }//GEN-LAST:event_jAddButtonActionPerformed
 
     private void jBrowseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBrowseButtonActionPerformed
         displayBrowserDialog();
     }//GEN-LAST:event_jBrowseButtonActionPerformed
+
+    private void jMoodsListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMoodsListActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMoodsListActionPerformed
+
+    private void jRemoveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRemoveButtonActionPerformed
+        System.out.println((String) jMoodsList.getSelectedItem());
+        Object[] paths = jSongsList.getSelectionPath().getPath();
+        System.out.println(paths.length);
+        if (paths.length != 3) {
+            return;
+        }
+        String mood = paths[1].toString();
+        String song = paths[2].toString();
+        this.central.removeSong(song, mood);
+    }//GEN-LAST:event_jRemoveButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jAddButton;
     private javax.swing.JButton jBrowseButton;
