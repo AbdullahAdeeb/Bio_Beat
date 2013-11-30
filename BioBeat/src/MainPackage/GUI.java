@@ -11,7 +11,6 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 
 /**
  *
@@ -79,6 +78,7 @@ public class GUI extends javax.swing.JFrame {
         jBrowseButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("BioBeat Central Control");
 
         jPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -220,13 +220,10 @@ public class GUI extends javax.swing.JFrame {
             this.central.displayErrorDialog("The song file path specified is invalid. \nmake sure the song is still there");
             return;
         }
-        try {
+        
             this.central.copyFileUsingStream(f, new File(CentralMain.SONGS_BASE_URL + f.getName()));
             this.central.addSong(f.getName(), (String) jMoodsList.getSelectedItem());
-        } catch (Exception ex) {
-            System.err.println(ex);
-            this.central.displayErrorDialog("There was an error while loading the song. \nOperation aborted.");
-        }
+        
 
     }//GEN-LAST:event_jAddButtonActionPerformed
 
@@ -248,6 +245,7 @@ public class GUI extends javax.swing.JFrame {
         String mood = paths[1].toString();
         String song = paths[2].toString();
         this.central.removeSong(song, mood);
+
     }//GEN-LAST:event_jRemoveButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jAddButton;

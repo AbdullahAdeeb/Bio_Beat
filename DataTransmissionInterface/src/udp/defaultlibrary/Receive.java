@@ -1,3 +1,5 @@
+package udp.defaultlibrary;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -6,15 +8,16 @@ import java.net.SocketException;
 
 public class Receive implements Runnable
 {
+	//Declare Global Variables
 	DatagramSocket receiveSocket;
-	DatagramPacket receivePacket;
+	DatagramPacket receivePacket, newPacketInfo;
 	boolean newPacket = false;
-	DatagramPacket newPacketInfo;
 	boolean listen = true;
 	int defaultPort = 69;
-	
+	//Constructor
 	public Receive()
 	{
+		//create new socket on port defaultPort
 		try {
 			receiveSocket = new DatagramSocket(defaultPort);
 		} catch (SocketException e) {
@@ -22,25 +25,29 @@ public class Receive implements Runnable
 			e.printStackTrace();
 		}
 	}
+	//Run method, calls receiveMessage()
 	public void run()
 	{
 		receiveMessage();
 	}
+	//Listen for packets
 	public void receiveMessage()
 	{
 		while(listen == true)
 		{
-			byte[] receiveData = new byte[12];
+			//initialize receiving data
+			byte[] receiveData = new byte[5];
 			receivePacket = new DatagramPacket(receiveData, receiveData.length);
 			try
 			{
-				//System.out.println("Receive - waiting for a packet");
+				//try to receive a packet
 				receiveSocket.receive(receivePacket);
 				System.out.println("Recieve - received a packet data = |"
 						+receivePacket.getData()[0]
 						+"|"+receivePacket.getData()[1]
 						+"|"+receivePacket.getData()[2]
-						+"|"+receivePacket.getData()[3]+"|");
+						+"|"+receivePacket.getData()[3]
+						+"|"+receivePacket.getData()[4]+"|");
 				
 			} 
 			catch (IOException e) 
@@ -48,32 +55,21 @@ public class Receive implements Runnable
 				e.printStackTrace();
 				System.out.println("Receive - Failed to receive something from the server");
 			}			
-			//System.out.println("Receive - waiting for last command to resolve");
-			while(newPacket)
-			{
-				/*try
-				{
-					
-					Thread.sleep(250);
-				} 
-				catch (InterruptedException e) 
-				{
-					e.printStackTrace();
-				}*/
-			}
-			
-			//System.out.println("Receive - Flagging boolean in Data Transmission and setting packet info");
-			setNewPacket(true, receivePacket);
-			
-		}
+			//While there is a packet that has yet to be read by DataTransmission
+			while(newPacket);
+			//set newPacket to true and newPacketInfo to receivePacket
+			setNewPacket(true, receivePacket);	
+		}//end listen for packets
 		
 	}
+	//Set newPacket and NewPacketInfo
 	public void setNewPacket(boolean temp, DatagramPacket newPack)
 	{
 		newPacket = temp;
 		newPacketInfo = newPack;
 	}
-	public boolean getNewPacket()
+	//Return newPacket boolean and if it was true set it to false
+	public synchronized boolean getNewPacket()
 	{
 		if(newPacket == true)
 		{
@@ -85,9 +81,9 @@ public class Receive implements Runnable
 			return false;
 		}
 	}
-	public DatagramPacket getNewPacketInfo()
+	//return Packet information
+	public synchronized DatagramPacket getNewPacketInfo()
 	{
-		//System.out.println("Receive - Returning Packet Info");
 		return newPacketInfo;
 	}
-}
+}//End Receive

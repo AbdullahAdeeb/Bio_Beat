@@ -2,17 +2,16 @@
 <root>
     <songs>
         <song name="beethoven" mood="relax" id="1">d:/songs/beethoven.mp3</song>
-        <song name="foobar" mood="relax" id="2">./res/songs/fakesong.mp3</song>
         <song name="foobar" mood="resting" id="3">d:/songs/beethoven.mp3</song>
         <song name="foobar" mood="resting" id="4">d:/songs/beethoven.mp3</song>
+        <song name="foobar" mood="excited" id="5">d:/songs/beethoven.mp3</song>
+        <song name="foobar" mood="excited" id="6">d:/songs/beethoven.mp3</song>
         <song name="foobar" mood="angry" id="7">d:/songs/beethoven.mp3</song>
         <song name="foobar" mood="angry" id="8">d:/songs/beethoven.mp3</song>
         <song name="foobar" mood="cooldown" id="9">d:/songs/beethoven.mp3</song>
         <song name="foobar" mood="cooldown" id="10">d:/songs/beethoven.mp3</song>
         <song mood="resting">D:/songs/22.mp3</song>
         <song mood="excited">d:/songs/5.mp3</song>
-        <song mood="resting">d:/songs/5.mp3</song>
-        <song mood="cooldown">d:/songs/6.mp3</song>
     </songs>
     <lights>
         <light mood="resting" portNumber="01" id="1"/>

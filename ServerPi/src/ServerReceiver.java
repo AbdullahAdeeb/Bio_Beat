@@ -8,24 +8,24 @@ import java.net.UnknownHostException;
 
 public class ServerReceiver 
 {
-	
-	DatagramPacket receivePacket;
-	DatagramPacket sendPacket;
-	DatagramSocket sendSocket;
-	DatagramSocket receiveSocket;
+	//Declare Global Variables
 	Send sender = new Send();
+	DatagramPacket receivePacket, sendPacket;
+	DatagramSocket sendSocket, receiveSocket;
 	InetAddress guiPi; // 1
 	InetAddress playerPi; // 3
 	InetAddress serverPi; // 4
 	InetAddress ioPi; // 2
 	int defaultPort = 68;
 	
+	//Main
 	public static void main( String args[])
 	{
+		//Start a serverReceiver
 		ServerReceiver reciever = new ServerReceiver();
-	    reciever.receiveAndEcho();
-	    
+	    reciever.receiveAndEcho(); 
 	}
+	//Initialize IPS to their proper IPS
 	public void initIP()
 	{
 		try 
@@ -41,6 +41,7 @@ public class ServerReceiver
 		}
 			
 	}
+	//initialize IPS to local address for testing
 	public void inittest()
 	{
 		try 
@@ -56,45 +57,49 @@ public class ServerReceiver
 		}
 			
 	}
+	//constructor
 	public ServerReceiver()
 	{
 		//initIP();
 		inittest();
-	      try
-	      {
-	    	 sendSocket = new DatagramSocket();
-	         receiveSocket = new DatagramSocket(defaultPort);
-	      }
-	      catch (SocketException se)
-	      {
-	         se.printStackTrace();
-	         System.exit(1);
-	      }
+	    try
+	    {
+	       sendSocket = new DatagramSocket();
+	       receiveSocket = new DatagramSocket(defaultPort);
+	    }
+	    catch (SocketException se)
+	    {
+	       se.printStackTrace();
+	       System.exit(1);
+	    }
 	}
+	//listen for packets
 	public void receiveAndEcho()
 	{
 		while(true)
 		{
-			byte data[] = new byte[12];
+			byte data[] = new byte[5];
 			receivePacket = new DatagramPacket(data, data.length);
 			try 
 			{
+				//receive a packet
 				receiveSocket.receive(receivePacket);
 		        data = receivePacket.getData();
 		        System.out.println("ServerReceiver - received a packet data = |"
 						+receivePacket.getData()[0]
 						+"|"+receivePacket.getData()[1]
 						+"|"+receivePacket.getData()[2]
-						+"|"+receivePacket.getData()[3]+"|");
+						+"|"+receivePacket.getData()[3]
+						+"|"+receivePacket.getData()[4]+"|");
 	        } 
 			catch (IOException e) 
 	        {
 				e.printStackTrace();
 	        	System.exit(1);
 			}
+			//Forward packet along
 			ServerResend sr = new ServerResend(receivePacket);
-			new Thread(sr).start();
-			
+			new Thread(sr).start();	
 		}
 	}
-}
+}//End ServerReceiver

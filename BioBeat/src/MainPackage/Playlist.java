@@ -12,7 +12,6 @@ import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
-import nu.xom.Node;
 import nu.xom.Serializer;
 
 /**
@@ -25,7 +24,6 @@ public class Playlist {
     private Document xSongs;
     private Element songsElement;
     private String songsXmlPath;
-    private String errorSongs = "";
 
     Playlist(String xmlPath) {
 
@@ -41,34 +39,29 @@ public class Playlist {
         this.songsElement = rootElement.getChildElements().get(0); // 0 to get the <songs>    otherwise use 1 to get <lights>
 
         Elements songs = songsElement.getChildElements();
+        String errorSongs = "";
         for (int i = 0; i < songs.size(); i++) {
             Element s = songs.get(i);
             try {
                 this.songsList.add(new Song(s.getValue(), s.getAttributeValue("mood"), true));
             } catch (Exception ex) {
                 errorSongs = errorSongs + s.getValue() + "\n";
-                
             }
+        }
+        String msg = "The following songs were not found:\n" + errorSongs;
+        if (!errorSongs.equals("")) {
+            CentralMain.displayErrorDialog(msg);
 
         }
+
         return errorSongs;
-        //TODO add for loop to load the lights
-    }
-
-    public void clearErrors() {
-        this.errorSongs = "";
-    }
-
-    public String getErrors() {
-        return this.errorSongs;
+        //TODO add for loop to load the lights (if we ever decide to implement it)
     }
 
     protected void addSong(String path, String mood) throws Exception {
         Song newSong = new Song(path, mood, false);
         this.songsList.add(newSong);
         this.songsElement.appendChild(newSong);
-        createNewXml();
-
     }
 
     public ArrayList<Song> getSongsWithMood(String mood) {
@@ -83,30 +76,24 @@ public class Playlist {
         return filteredArray;
     }
 
-    void removeSong(String song, String mood) {
+    public void removeSong(String song, String mood) throws Exception {
         int songIndex = getSongIndex(song, mood);
         int songDocIndex = getSongIndexinDoc(song, mood);
         if (songIndex == -1 || songDocIndex == -1) {
-            //TODO add an error dialog that can't remove the song
-            return;
+            throw new Exception("unable to delete song Playlsit.removeSong()");
         }
         this.songsList.remove(songIndex);
         this.songsElement.getChildElements().get(songDocIndex).detach();
-        createNewXml();
     }
 
-    private void createNewXml() {
-
-
+    public void overwriteXmlFile() {
         xSongs = this.songsElement.getParent().getDocument();
         try {
-            System.out.println("1");
             FileOutputStream fos = new FileOutputStream(new File(this.songsXmlPath));
             Serializer serializer = new Serializer(fos);
             serializer.setIndent(4);
             serializer.setMaxLength(64);
             serializer.write(xSongs);
-            System.out.println("done");
         } catch (IOException ex) {
             System.err.println(ex);
         }
@@ -115,7 +102,6 @@ public class Playlist {
     private int getSongIndex(String name, String mood) {
         System.out.println(name + "||" + mood);
         for (int i = 0; i < this.songsList.size(); i++) {
-
             if (this.songsList.get(i).getMood().equals(mood) && this.songsList.get(i).getFile().getName().equals(name)) {
                 return i;
             }
@@ -135,6 +121,22 @@ public class Playlist {
         return -1;
     }
 
+    public ArrayList<String> toArray() {
+        ArrayList<String> out = new ArrayList<String>();
+        for (int i = 0; i < this.songsList.size(); i++) {
+            out.add(this.songsList.get(i).getFile() + "(" + this.songsList.get(i).getMood() + ")");
+        }
+        return out;
+    }
+
+    public String toString() {
+        String out = this.songsElement.toXML();
+        return out;
+    }
+/////////////////////////////////////////////////////
+///       INTERNAL CLASSES
+//////////////////////////////////////////////////////
+
     class Song extends Element {
 
         private File file;
@@ -148,7 +150,7 @@ public class Playlist {
                 throw new Exception(path);
             }
             this.addAttribute(new Attribute("mood", m));
-            System.out.println("song is read with <" + path + "> and mood <" + m + ">");
+//            System.out.println("song is read with <" + path + "> and mood <" + m + ">");
 
         }
 
