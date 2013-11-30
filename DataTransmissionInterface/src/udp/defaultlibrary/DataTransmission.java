@@ -1,3 +1,4 @@
+package udp.defaultlibrary;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.DatagramPacket;
@@ -5,46 +6,64 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
 
 public class DataTransmission implements Runnable
 {
-	private DatagramSocket sendSocket,receiveSocket;
-	private DatagramPacket sendPacket,receivePacket;
-	Receive rec;
-	Send sen;
-	final static int CMD_PLAY = 1;
-	final static int CMD_PAUSE = 2;
-	final static int CMD_PREVIOUS = 3;
-	final static int CMD_NEXT = 4;
-	final static int CMD_CLOSE = 5;
-	final static int CMD_TEST1 = 6;
-	final static int CMD_TEST2 = 7;
-	final static int CMD_TEST4 = 8;
+	
+	//User Commands
+	public final static int CMD_ERROR = 0;
+	public final static int CMD_PLAY = 1;
+	public final static int CMD_PAUSE = 2;
+	public final static int CMD_PREVIOUS = 3;
+	public final static int CMD_NEXT = 4;
+	public final static int CMD_CLOSE = 5;
+	public final static int CMD_TEST1 = 6;
+	public final static int CMD_TEST2 = 7;
+	public final static int CMD_TEST4 = 8;
+	public final static int CMD_MOOD = 9;
+	
+	//Moods
+	final static int mood1 = 1;
+	final static int mood2 = 2;
+	final static int mood3 = 3;
+	final static int mood4 = 4;
+	final static int mood5 = 5;
+	
+	//Global variables
 	InetAddress guiPi; // 1
 	InetAddress playerPi; // 3
 	InetAddress serverPi; // 4
 	InetAddress ioPi; // 2
-	int receivingPort = 68;
+	int receivingPort = 70;
 	private DatagramPacket newPacketInfo;
 	private boolean newPacket = false;
-	private int command = 0;
+	ArrayList<Integer> command = new ArrayList<Integer>();
+	private DatagramSocket sendSocket,receiveSocket;
+	private DatagramPacket sendPacket,receivePacket;
+	Receive rec;
+	Send sen;
+	int commandCounter = 0;
 	
+
+	//Constructor
 	public DataTransmission()
 	{
-		//initSocket();
-		//initIP();
-		inittest();
+		initIP();
+		//inittest();
 		init();
+		run();
 	}
+	//Initialize Receive and send class objects
 	public void init()
 	{
 		rec = new Receive();
 		sen = new Send();
-	
 	}
+	//initialize IPs as local host for testing
 	public void inittest()
 	{
 		try 
@@ -60,12 +79,14 @@ public class DataTransmission implements Runnable
 		}
 			
 	}
+	//initialize proper IP addresses 
 	public void initIP()
 	{
+		receivingPort = 5000;
 		try 
 		{
-			guiPi= InetAddress.getByName("10.0.0.43");
-			playerPi= InetAddress.getByName("10.0.0.42");
+			guiPi= InetAddress.getByName("10.0.0.42");
+			playerPi= InetAddress.getByName("10.0.0.43");
 			serverPi= InetAddress.getByName("10.0.0.41");
 			ioPi= InetAddress.getByName("10.0.0.44");
 		}
@@ -75,21 +96,7 @@ public class DataTransmission implements Runnable
 		}
 			
 	}
-	public void initSocket()
-	{
-	/*	try 
-		{
-			//sendSocket = new DatagramSocket();
-			//receiveSocket = new DatagramSocket(68);
-		} 
-		catch (SocketException e) 
-		{
-			System.out.println("Failed to create a socket, the program will terminate");
-			System.exit(1);
-		}
-		*/
-		
-	}//end init
+	//Send a UDP message based on the cmd passed into the method
 	public void sendCMD(int CMD)
 	{
 		/*for the gui:
@@ -99,14 +106,8 @@ public class DataTransmission implements Runnable
 		 * 	4 Next
 		 * 	5 Close
 		 * for the player:
-		 * 
-		 * 
-		 * 
 		 * for the server:
-		 * 
 		 * for the I/O handler:
-		 * 
-		 * 
 		 */
 		/*
 		 * byte format for messages
@@ -114,30 +115,17 @@ public class DataTransmission implements Runnable
 		 * data[1] = which pi board it is being sent to, 1 = gui, 2 = io, 3 = player, 4 = server
 		 * data[2] = cmd
 		 * data[3] = cmd
-		 * data[4] = 0; buffer bit
-		 * data[5] = 0; Heart pulse 100 digit
-		 * data[6] = 0; Heart pulse 10 digit
-		 * data[7] = 0; Heart Pulse 1 digit
-		 * data[8] = 0; buffer bit
-		 * data[9] = 0; temperature 10 digit
-		 * data[10] = 0; temperature 1 digit
-		 * data[11] = 0; end bit
+		 * data[4] = mood
 		 * System.out.println("DataTransmision - preparing to Send Cmd "+CMD);
 		*/
-		
-		byte[] data = new byte[12];
+		//set Up byte DATA
+		byte[] data = new byte[5];
 		data[0] = 0;
 		data[1] = 0;
 		data[2] = 0;
 		data[3] = 0;
 		data[4] = 0;
-		data[5] = 0;
-		data[6] = 0;
-		data[7] = 0;
-		data[8] = 0;
-		data[9] = 0;
-		data[10] = 0;
-		data[11] = 0;
+		//initialize the Packet
 		sendPacket = new DatagramPacket(data, data.length,serverPi, receivingPort);
 		//commands to player
 		if(CMD == CMD_PLAY)
@@ -199,66 +187,71 @@ public class DataTransmission implements Runnable
 		else if(CMD == CMD_TEST4)
 		{
 			data[0] = 0;
-			data[1] = 4;
+			data[1] = 3;
 			data[2] = 0;
 			data[3] = 8;
 			sendPacket = new DatagramPacket(data, data.length,serverPi, receivingPort);
 		}
+		else if(CMD == CMD_MOOD)
+		{
+			data[0] = 0;
+			data[1] = 1;
+			data[2] = 0;
+			data[3] = 9;
+			sendPacket = new DatagramPacket(data, data.length,serverPi, receivingPort);
+		}
 		// end commands to player
+		
+		
+		
+		//send Packet
 		System.out.println("DataTransmission - packet is being sent data = |"
 				+sendPacket.getData()[0]
 				+"|"+sendPacket.getData()[1]
 				+"|"+sendPacket.getData()[2]
-				+"|"+sendPacket.getData()[3]+"|");
+				+"|"+sendPacket.getData()[3]
+				+"|"+sendPacket.getData()[4]+"|");
 		sen.send(sendPacket);
 	}
+	//return newPacket
 	public boolean isNewPacket()
 	{
 		return newPacket;
 	}
+	//check whether or not there is new packet info to get
 	public void setNewPacketInfo()
 	{
 		rec.getNewPacketInfo();
 	}
+	//set newPacket to false
 	public void setIsNewPacketFalse()
 	{
 		//System.out.println("DataTransmission - Set New Packet False");
 		newPacket = false;
 	}
+	//Returns the packet that was received
 	public DatagramPacket getPacketInfo()
 	{
 		newPacketInfo = rec.getNewPacketInfo();
 		return newPacketInfo;
 	}
+	//checks whether or not there is a new command to get
 	public void checkForIncoming()
 	{
 		while(true)
 		{
-		//	System.out.println("waiting for a packet");
 			if(rec.getNewPacket())
 			{
 				receivePacket = getPacketInfo();
-				//System.out.println("DataTransmission - Trying to set a New Command");
-				while(command!=0)
-				{
-					/*try 
-					{
-						Thread.sleep(100);
-						
-					} 
-					catch (InterruptedException e) 
-					{
-						e.printStackTrace();
-					}*/
-				}
-				//System.out.println("DataTransmission - New Command Set");
 				setCommand(returnCommand(receivePacket));
 				setIsNewPacketFalse();
 			}
 		}
 	}
+	//return specific command based on packet data
 	public int returnCommand(DatagramPacket temp)
 	{
+		//compare the bytes vs expected values and return the specified command
 		byte[] tempdata = temp.getData();
 		if(tempdata[0] == 0)
 		{
@@ -298,28 +291,41 @@ public class DataTransmission implements Runnable
 			{
 				return CMD_TEST4;
 			}
+			else if(tempdata[1] == 1)
+			{
+				if(tempdata[3] == 9)
+				{
+					return CMD_MOOD;
+				}
+				
+			}
+			
 			
 		}
 		return 0;
 	}
+	//add command of paramater num to arraylist
 	public void setCommand(int num)
 	{
-		command = num;
+		command.add(num);
 	}
+	//get command at commandCounter, then increment command counter
+	//get command will return a command if there are any, if not it will return 0
 	public int getCommand()  
 	{
-		int temp = command;
-		setCommand(0);
-		return temp;
+		//checks if there is a command to return
+		if(commandCounter<command.size())
+		{
+			int temp = command.get(commandCounter);
+			commandCounter += 1;
+			return temp;
+		}
+		return 0;
 	}
+	//start thread
 	public void run() 
 	{
 		new Thread(rec).start();
-		//	rec.run();
-		//System.out.println("DataTransmission - Start Receive thread");
-		//System.out.println("DataTransmission - Calling checkForIncoming");
 		checkForIncoming();
 	}
-	
-
-}
+}//End DataTransmission

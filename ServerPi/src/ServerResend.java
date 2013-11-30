@@ -4,6 +4,7 @@ import java.net.UnknownHostException;
 
 public class ServerResend implements Runnable
 {
+	//Global Variables
 	DatagramPacket sendPacket, receivedPacket;
 	InetAddress guiPi; // 1
 	InetAddress playerPi; // 3
@@ -11,17 +12,20 @@ public class ServerResend implements Runnable
 	InetAddress ioPi; // 2
 	InetAddress destinationIp;
 	int defaultPort = 69;
+	//Constructor
 	public ServerResend(DatagramPacket receivedPacket)
 	{
 		this.receivedPacket = receivedPacket;
-		inittest();
+		initIP();
 	}
+	//Initialize IPS to their proper IPS
 	public void initIP()
 	{
+		defaultPort = 5000;
 		try 
 		{
-			guiPi = InetAddress.getByName("10.0.0.43");
-			playerPi = InetAddress.getByName("10.0.0.42");
+			guiPi = InetAddress.getByName("10.0.0.42");
+			playerPi = InetAddress.getByName("10.0.0.43");
 			serverPi = InetAddress.getByName("10.0.0.41");
 			ioPi = InetAddress.getByName("10.0.0.44");
 		}
@@ -31,6 +35,7 @@ public class ServerResend implements Runnable
 		}
 			
 	}
+	//initialize IPS to local address for testing
 	public void inittest()
 	{
 		try 
@@ -46,18 +51,26 @@ public class ServerResend implements Runnable
 		}
 			
 	}
+	//runnable method
 	public void run() 
 	{
+		//check IP
 		destinationIp = getIP(receivedPacket);
+		//initialize sendPacket datagram
 		sendPacket = new DatagramPacket(receivedPacket.getData(), receivedPacket.getData().length, destinationIp, defaultPort);
-		System.out.println("ServerResend - packet is being sent data = |"
+		System.out.println("Send - sent a packet data = |"
 				+sendPacket.getData()[0]
 				+"|"+sendPacket.getData()[1]
 				+"|"+sendPacket.getData()[2]
-				+"|"+sendPacket.getData()[3]+"|");
+				+"|"+sendPacket.getData()[3]
+				+"|"+sendPacket.getData()[4]+"|");
+		//create a new Send object
 		Send s = new Send();
+		//send the packet
 		s.send(sendPacket);
 	}
+	//Return IP address of the pi board this packet is being sent to
+	//This information is taken from the packets DATA
 	public InetAddress getIP(DatagramPacket temp)
 	{
 		if(temp.getData()[1] == 1)
@@ -86,5 +99,4 @@ public class ServerResend implements Runnable
 		}
 	
 	}
-
-}
+}//End ServerResend

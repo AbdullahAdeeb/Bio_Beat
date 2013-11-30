@@ -6,26 +6,31 @@ import java.net.SocketException;
 
 public class Send
 {
+	//Global Socket
 	DatagramSocket sendSocket;
-	
+	//constructor
 	public Send()
 	{
-		
-		try {
+		//initialize socket on random port
+		try 
+		{
 			sendSocket = new DatagramSocket();
-		} catch (SocketException e) {
-			// TODO Auto-generated catch block
+		} 
+		catch (SocketException e) 
+		{
 			e.printStackTrace();
 		}
 	}
+	//send a packet
 	public void send(DatagramPacket toSend)
 	{
-		//System.out.println("Send - trying to send message");
+	
 		System.out.println("Send - sent a packet data = |"
 				+toSend.getData()[0]
 				+"|"+toSend.getData()[1]
 				+"|"+toSend.getData()[2]
-				+"|"+toSend.getData()[3]+"|");
+				+"|"+toSend.getData()[3]
+				+"|"+toSend.getData()[4]+"|");
 		try 
 		{
 			
@@ -36,6 +41,5 @@ public class Send
 		{
 			e.printStackTrace();
 		}
-	}
-	
-}
+	}	
+}//End Send
