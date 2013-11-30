@@ -16,15 +16,16 @@ public class ServerResend implements Runnable
 	public ServerResend(DatagramPacket receivedPacket)
 	{
 		this.receivedPacket = receivedPacket;
-		inittest();
+		initIP();
 	}
 	//Initialize IPS to their proper IPS
 	public void initIP()
 	{
+		defaultPort = 5000;
 		try 
 		{
-			guiPi = InetAddress.getByName("10.0.0.43");
-			playerPi = InetAddress.getByName("10.0.0.42");
+			guiPi = InetAddress.getByName("10.0.0.42");
+			playerPi = InetAddress.getByName("10.0.0.43");
 			serverPi = InetAddress.getByName("10.0.0.41");
 			ioPi = InetAddress.getByName("10.0.0.44");
 		}

@@ -16,7 +16,7 @@ public class ServerReceiver
 	InetAddress playerPi; // 3
 	InetAddress serverPi; // 4
 	InetAddress ioPi; // 2
-	int defaultPort = 68;
+	int defaultPort = 5000;
 	
 	//Main
 	public static void main( String args[])
@@ -28,6 +28,7 @@ public class ServerReceiver
 	//Initialize IPS to their proper IPS
 	public void initIP()
 	{
+		defaultPort = 5000;
 		try 
 		{
 			guiPi = InetAddress.getByName("10.0.0.43");

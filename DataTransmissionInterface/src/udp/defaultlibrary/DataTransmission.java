@@ -1,5 +1,8 @@
 package udp.defaultlibrary;
+<<<<<<< HEAD:DataTransmissionInterface/src/udp/defaultlibrary/DataTransmission.java
 
+=======
+>>>>>>> 43001ab9168c3b3d11857a4d4bffa6dae11e5a00:DataTransmissionInterface/src/udp/defaultlibrary/DataTransmission.java
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.DatagramPacket;
@@ -16,6 +19,7 @@ public class DataTransmission implements Runnable
 {
 	
 	//User Commands
+<<<<<<< HEAD:DataTransmissionInterface/src/udp/defaultlibrary/DataTransmission.java
 	final static int CMD_ERROR = 0;
 	final static int CMD_PLAY = 1;
 	final static int CMD_PAUSE = 2;
@@ -26,6 +30,18 @@ public class DataTransmission implements Runnable
 	final static int CMD_TEST2 = 7;
 	final static int CMD_TEST4 = 8;
 	final static int CMD_MOOD = 9;
+=======
+	public final static int CMD_ERROR = 0;
+	public final static int CMD_PLAY = 1;
+	public final static int CMD_PAUSE = 2;
+	public final static int CMD_PREVIOUS = 3;
+	public final static int CMD_NEXT = 4;
+	public final static int CMD_CLOSE = 5;
+	public final static int CMD_TEST1 = 6;
+	public final static int CMD_TEST2 = 7;
+	public final static int CMD_TEST4 = 8;
+	public final static int CMD_MOOD = 9;
+>>>>>>> 43001ab9168c3b3d11857a4d4bffa6dae11e5a00:DataTransmissionInterface/src/udp/defaultlibrary/DataTransmission.java
 	
 	//Moods
 	final static int mood1 = 1;
@@ -39,7 +55,7 @@ public class DataTransmission implements Runnable
 	InetAddress playerPi; // 3
 	InetAddress serverPi; // 4
 	InetAddress ioPi; // 2
-	int receivingPort = 68;
+	int receivingPort = 70;
 	private DatagramPacket newPacketInfo;
 	private boolean newPacket = false;
 	ArrayList<Integer> command = new ArrayList<Integer>();
@@ -49,12 +65,22 @@ public class DataTransmission implements Runnable
 	Send sen;
 	int commandCounter = 0;
 	
+<<<<<<< HEAD:DataTransmissionInterface/src/udp/defaultlibrary/DataTransmission.java
 	//Constructor
 	public DataTransmission()
 	{
 		//initIP();
 		inittest();
+=======
+
+	//Constructor
+	public DataTransmission()
+	{
+		initIP();
+		//inittest();
+>>>>>>> 43001ab9168c3b3d11857a4d4bffa6dae11e5a00:DataTransmissionInterface/src/udp/defaultlibrary/DataTransmission.java
 		init();
+		run();
 	}
 	//Initialize Receive and send class objects
 	public void init()
@@ -81,10 +107,11 @@ public class DataTransmission implements Runnable
 	//initialize proper IP addresses 
 	public void initIP()
 	{
+		receivingPort = 5000;
 		try 
 		{
-			guiPi= InetAddress.getByName("10.0.0.43");
-			playerPi= InetAddress.getByName("10.0.0.42");
+			guiPi= InetAddress.getByName("10.0.0.42");
+			playerPi= InetAddress.getByName("10.0.0.43");
 			serverPi= InetAddress.getByName("10.0.0.41");
 			ioPi= InetAddress.getByName("10.0.0.44");
 		}
@@ -185,7 +212,7 @@ public class DataTransmission implements Runnable
 		else if(CMD == CMD_TEST4)
 		{
 			data[0] = 0;
-			data[1] = 4;
+			data[1] = 3;
 			data[2] = 0;
 			data[3] = 8;
 			sendPacket = new DatagramPacket(data, data.length,serverPi, receivingPort);

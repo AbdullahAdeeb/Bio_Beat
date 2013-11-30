@@ -1,5 +1,8 @@
 package udp.defaultlibrary;
+<<<<<<< HEAD:DataTransmissionInterface/src/udp/defaultlibrary/Receive.java
 
+=======
+>>>>>>> 43001ab9168c3b3d11857a4d4bffa6dae11e5a00:DataTransmissionInterface/src/udp/defaultlibrary/Receive.java
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -17,6 +20,10 @@ public class Receive implements Runnable
 	//Constructor
 	public Receive()
 	{
+<<<<<<< HEAD:DataTransmissionInterface/src/udp/defaultlibrary/Receive.java
+=======
+		defaultPort = 5000;
+>>>>>>> 43001ab9168c3b3d11857a4d4bffa6dae11e5a00:DataTransmissionInterface/src/udp/defaultlibrary/Receive.java
 		//create new socket on port defaultPort
 		try {
 			receiveSocket = new DatagramSocket(defaultPort);

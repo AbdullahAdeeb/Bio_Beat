@@ -1,5 +1,8 @@
 package udp.defaultlibrary;
+<<<<<<< HEAD:DataTransmissionInterface/src/udp/defaultlibrary/Send.java
 
+=======
+>>>>>>> 43001ab9168c3b3d11857a4d4bffa6dae11e5a00:DataTransmissionInterface/src/udp/defaultlibrary/Send.java
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
