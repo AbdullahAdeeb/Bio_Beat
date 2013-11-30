@@ -1,6 +1,8 @@
 package MainPackage;
 
 import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -32,7 +34,7 @@ public class CentralMain {
     private ArrayList<String> moodsList;
     private Playlist playlist;
     private final GUIRunnable guiRunnable;
-    
+    private DataTransmission dt;
     CentralMain() {
         Document mDoc = CentralMain.loadXml(MOODS_XML_PATH);
         populateMoodsList(mDoc);
@@ -43,7 +45,7 @@ public class CentralMain {
         guiRunnable.run();
         
         // Start UDP connection to recieve and send
-        DataTransmission dt = new DataTransmission();
+        dt = new DataTransmission(new MyIncomingActionListener());
     }
     
     public static Document loadXml(String path) {
@@ -129,12 +131,23 @@ public class CentralMain {
     //              DATA TRANSMISSION
     ///////////////////////////////////////////////////
     
-    protected void sendMsg(String cmd){
-        
-        
-        dt.sendCMD(DataTransmission.);
-        
+    protected void sendMsg(int cmd){ 
+        dt.sendCMD(cmd); 
     }
+    
+    
+    //////////////////////////////////////////////////////
+    //             INCOMING CONNECTION LISTENER
+    ////////////////////////////////////////////////////
+class MyIncomingActionListener implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String actionCommand = e.getActionCommand();
+            System.out.println("recieved >> "+actionCommand);
+        }
+
+}
     ///////////////////////////////////////////////////
     //            MAIN 
     ///////////////////////////////////////////////////
@@ -163,26 +176,10 @@ public class CentralMain {
         //</editor-fold>
 
         CentralMain CM = new CentralMain();
-        
-        
     }
 
-//    class ErrorDialog extends Thread {
-//
-//        String errormsg;
-//
-//        ErrorDialog(String msg) {
-//            this.errormsg = msg;
-//        }
-//
-//        @Override
-//        public void run() {
-//            JOptionPane.showMessageDialog(new Frame(),
-//                    this.errormsg,
-//                    "Error Loading Songs",
-//                    JOptionPane.ERROR_MESSAGE);
-//        }
-//    }
+
+
     class GUIRunnable implements Runnable {
         
         GUI gui;

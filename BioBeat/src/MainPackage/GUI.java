@@ -11,6 +11,7 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import udp.defaultlibrary.DataTransmission;
 
 /**
  *
@@ -83,8 +84,18 @@ public class GUI extends javax.swing.JFrame {
         jPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jPrevButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/icon-prev.png"))); // NOI18N
+        jPrevButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jPrevButtonActionPerformed(evt);
+            }
+        });
 
         jNextButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/icon-next.png"))); // NOI18N
+        jNextButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jNextButtonActionPerformed(evt);
+            }
+        });
 
         jPlayButton.setBackground(new java.awt.Color(255, 255, 255));
         jPlayButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/icon-play.png"))); // NOI18N
@@ -205,12 +216,12 @@ public class GUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jPlayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPlayButtonActionPerformed
-        if (!jPlayButton.isSelected()) {
+        if (!jPlayButton.isSelected()) { // paused
             jPlayButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/icon-play.png")));
-
-        } else {
+            this.central.sendMsg(DataTransmission.CMD_PAUSE);
+        } else { //playing
             jPlayButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/icon-pause.png")));
-
+            this.central.sendMsg(DataTransmission.CMD_PLAY);
         }
     }//GEN-LAST:event_jPlayButtonActionPerformed
 
@@ -220,10 +231,10 @@ public class GUI extends javax.swing.JFrame {
             this.central.displayErrorDialog("The song file path specified is invalid. \nmake sure the song is still there");
             return;
         }
-        
-            this.central.copyFileUsingStream(f, new File(CentralMain.SONGS_BASE_URL + f.getName()));
-            this.central.addSong(f.getName(), (String) jMoodsList.getSelectedItem());
-        
+
+        this.central.copyFileUsingStream(f, new File(CentralMain.SONGS_BASE_URL + f.getName()));
+        this.central.addSong(f.getName(), (String) jMoodsList.getSelectedItem());
+
 
     }//GEN-LAST:event_jAddButtonActionPerformed
 
@@ -247,6 +258,14 @@ public class GUI extends javax.swing.JFrame {
         this.central.removeSong(song, mood);
 
     }//GEN-LAST:event_jRemoveButtonActionPerformed
+
+    private void jNextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jNextButtonActionPerformed
+        this.central.sendMsg(DataTransmission.CMD_NEXT);
+    }//GEN-LAST:event_jNextButtonActionPerformed
+
+    private void jPrevButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPrevButtonActionPerformed
+        this.central.sendMsg(DataTransmission.CMD_PREVIOUS);
+    }//GEN-LAST:event_jPrevButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jAddButton;
     private javax.swing.JButton jBrowseButton;
