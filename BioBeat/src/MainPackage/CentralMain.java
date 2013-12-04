@@ -26,10 +26,10 @@ import udp.defaultlibrary.DataTransmission;
  */
 public class CentralMain {
     
-    private final static String SONGS_XML_PATH = "res/BioBeat_songs.xml";
-    private final static String MOODS_XML_PATH = "res/BioBeat_moods.xml";
-    public final static String SONGS_BASE_URL = "d:/songs/";
     
+    public final static String BASE_URL = "/home/pi/public/";
+    private final static String SONGS_XML_PATH = BASE_URL+"BioBeat_songs.xml";
+    private final static String MOODS_XML_PATH = BASE_URL+"res/BioBeat_moods.xml";
     
     private ArrayList<String> moodsList;
     private Playlist playlist;
@@ -69,7 +69,7 @@ public class CentralMain {
     
     public void addSong(String name, String mood) {
         try {
-            this.playlist.addSong(CentralMain.SONGS_BASE_URL + name, mood);
+            this.playlist.addSong(CentralMain.BASE_URL + name, mood);
             this.playlist.overwriteXmlFile();
             this.guiRunnable.reloadSongsList();
         } catch (Exception ex) {
@@ -132,7 +132,9 @@ public class CentralMain {
     ///////////////////////////////////////////////////
     
     protected void sendMsg(int cmd){ 
+        System.out.println("sending msg >>"+cmd);
         dt.sendCMD(cmd); 
+        System.out.println("mesage was sent");
     }
     
     
@@ -143,6 +145,7 @@ class MyIncomingActionListener implements ActionListener{
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            
             String actionCommand = e.getActionCommand();
             System.out.println("recieved >> "+actionCommand);
         }
