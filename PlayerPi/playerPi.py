@@ -1,9 +1,9 @@
 ##############################
-####					  ####
+####			  ####
 #### Class Player Pi	  ####
 #### Primary Contributor: ####
 #### Tejas Patil 100823713####
-####					  ####
+####			  ####
 ##############################
 
 # importing important directories 
@@ -170,7 +170,7 @@ def stop():
 	
 
 # IP address to receive requests 
-UDP_MyIP = "10.0.0.43"
+UDP_MyIP = "127.0.0.1"
 
 # Port for UDP communication
 UDP_Port = 5000
