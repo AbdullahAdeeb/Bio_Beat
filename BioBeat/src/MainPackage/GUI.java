@@ -68,6 +68,8 @@ public class GUI extends javax.swing.JFrame {
         jMoodsList = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
         jBrowseButton = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jsongonplayText = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("BioBeat Central Control");
@@ -177,6 +179,10 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
+        jLabel3.setText("currently playing >> ");
+
+        jsongonplayText.setText("Paused");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -199,7 +205,12 @@ public class GUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jAddButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jRemoveButton)))
+                        .addComponent(jRemoveButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jsongonplayText, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -207,8 +218,12 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                    .addComponent(jsongonplayText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jAddButton)
@@ -224,11 +239,6 @@ public class GUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    
-    
-    
-    
-    
 /////////////////////////////////////////////////////////
     /////// ACTION CALLBACK METHODS TO THE CONTROLLER 
     //////////////////////////////////////////////
@@ -274,7 +284,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jNextButtonActionPerformed
 
     private void jPrevButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPrevButtonActionPerformed
-this.controller.actionPerformed(new ActionEvent(this, 0, GUI.PREV_BUT));    }//GEN-LAST:event_jPrevButtonActionPerformed
+        this.controller.actionPerformed(new ActionEvent(this, 0, GUI.PREV_BUT));    }//GEN-LAST:event_jPrevButtonActionPerformed
 
     private void jVolUpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jVolUpButtonActionPerformed
         this.controller.actionPerformed(new ActionEvent(this, 0, GUI.VOL_UP));
@@ -283,12 +293,12 @@ this.controller.actionPerformed(new ActionEvent(this, 0, GUI.PREV_BUT));    }//G
     private void jVolDwnButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jVolDwnButtonActionPerformed
         this.controller.actionPerformed(new ActionEvent(this, 0, GUI.VOL_DWN));
     }//GEN-LAST:event_jVolDwnButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jAddButton;
     private javax.swing.JButton jBrowseButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JComboBox jMoodsList;
     private javax.swing.JButton jNextButton;
     private javax.swing.JPanel jPanel1;
@@ -300,6 +310,7 @@ this.controller.actionPerformed(new ActionEvent(this, 0, GUI.PREV_BUT));    }//G
     private javax.swing.JTree jSongsList;
     private javax.swing.JButton jVolDwnButton;
     private javax.swing.JButton jVolUpButton;
+    private javax.swing.JLabel jsongonplayText;
     // End of variables declaration//GEN-END:variables
 
     private void loadMoodsList() {
@@ -309,6 +320,10 @@ this.controller.actionPerformed(new ActionEvent(this, 0, GUI.PREV_BUT));    }//G
 
     public void setPathField(String path) {
         jPathField.setText(path);
+    }
+
+    public void songonplaytext(String txt) {
+        jsongonplayText.setText(txt);
     }
 
     public void displayBrowserDialog() {

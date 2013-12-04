@@ -113,7 +113,7 @@ public class CentralMain {
 
     protected void nextSong() {
 
-        if (songsToBePlayed.size() == 0) {
+        if (songsToBePlayed == null || songsToBePlayed.size() == 0) {
             return;
         }
         if (songCurrentIndex < songsToBePlayed.size() - 1) {
@@ -123,13 +123,13 @@ public class CentralMain {
         }
         updateSongtoPlay();
     }
-    
-    protected void prevSong(){
-        if (songsToBePlayed.size() == 0) {
+
+    protected void prevSong() {
+        if (songsToBePlayed == null || songsToBePlayed.size() == 0) {
             return;
         }
         if (songCurrentIndex == 0) {
-            songCurrentIndex = songsToBePlayed.size()-1;
+            songCurrentIndex = songsToBePlayed.size() - 1;
         } else {
             songCurrentIndex--;
         }
@@ -138,9 +138,10 @@ public class CentralMain {
 
     protected void updateSongtoPlay() {
         try {
-            playlist.setPlaySong(songsToBePlayed.get(songCurrentIndex));
+            Playlist.Song song = songsToBePlayed.get(songCurrentIndex);
+            playlist.setPlaySong(song);
             playlist.overwriteXmlFile();
-
+            this.guiRunnable.setSongonplayText(song.getName()+"<"+song.getMood()+">");
         } catch (Exception ex) {
             CentralMain.displayErrorDialog("There was an error while setting the song to be played in the XML.\n this will affect the player");
         }
@@ -217,6 +218,10 @@ public class CentralMain {
             }
 
             this.gui.setVisible(true);
+        }
+
+        public void setSongonplayText(String txt) {
+            this.gui.songonplaytext(txt);
         }
 
         public GUI getGUI() {

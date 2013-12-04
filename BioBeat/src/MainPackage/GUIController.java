@@ -57,11 +57,12 @@ class GUIController implements ActionListener {
     }
 
     private void jNextButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        this.central.
+        this.central.nextSong();
         sendMsg(DataTransmission.CMD_NEXT);
     }
 
     private void jPrevButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        this.central.prevSong();
         sendMsg(DataTransmission.CMD_PREVIOUS);
     }
 
