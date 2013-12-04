@@ -11,7 +11,12 @@ import java.util.EventObject;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
-
+/*Written By Drew Gascoigne 100827090
+ * ****** This class is to be used as a library for the biobeat project
+ * ****** It provides the ability to create an action listener for receiving packets
+ * ****** Provides the abillity to send messages with a single method call
+ * ****** Will return moods or commands depending on the needs of the program using it 
+ */
 public class DataTransmission
 {
 	
@@ -210,16 +215,7 @@ public class DataTransmission
 			return;
 		}
 		// end commands to player
-		System.out.println("Got command");
-		
-		
-		//send Packet
-		System.out.println("DataTransmission - packet is being sent data = |"
-				+sendPacket.getData()[0]
-				+"|"+sendPacket.getData()[1]
-				+"|"+sendPacket.getData()[2]
-				+"|"+sendPacket.getData()[3]
-				+"|"+sendPacket.getData()[4]+"|");
+
 		sen.send(sendPacket);
 	}
 	//Send a UDP message based on the mood passed into the method
@@ -285,15 +281,6 @@ public class DataTransmission
 			return;
 		}
 		//end mood selection
-		
-		
-		//send Packet
-		System.out.println("DataTransmission - packet is being sent data = |"
-				+sendPacket.getData()[0]
-				+"|"+sendPacket.getData()[1]
-				+"|"+sendPacket.getData()[2]
-				+"|"+sendPacket.getData()[3]
-				+"|"+sendPacket.getData()[4]+"|");
 		sen.send(sendPacket);
 	}
 	//return newPacket
@@ -363,7 +350,7 @@ public class DataTransmission
 		// end data parser
 		return 0;
 	}
-	//get command will return a command if there are any, if not it will return 0
+	//get mood will return a mood
 	public static int getMood(DatagramPacket temp)
 	{
 		return temp.getData()[4];

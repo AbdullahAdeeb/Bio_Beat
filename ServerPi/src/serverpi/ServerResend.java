@@ -3,6 +3,12 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+/*Written By Drew Gascoigne 100827090
+ * ****** This java class is a runnable and will be passed a received packet.
+ * ****** It then parses through the data and finds the destination ip of the packet
+ * ****** Send is called to forward the packet along
+ */
+
 public class ServerResend implements Runnable
 {
 	//Global Variables

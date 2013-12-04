@@ -4,6 +4,11 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
+/*Written By Drew Gascoigne 100827090
+ * ****** This Java application is used as the server on the serverPi
+ * ****** this application will receive a packet from a raspberryPi board
+ * ****** and then call server resend
+ */
 
 public class ServerReceiver 
 {
