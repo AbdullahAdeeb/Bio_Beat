@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
     <songs>
-        <song mood="Relaxed" play="false">d:/songs/beethoven.mp3</song>
-        <song mood="Angry" play="false">./res/songs/fakesong.mp3</song>
-        <song mood="Sad" play="false">d:/songs/beethoven.mp3</song>
-        <song mood="Angry" play="false">D:/songs/22.mp3</song>
-        <song mood="Happy" play="false">d:/songs/5.mp3</song>
-        <song mood="Angry" play="false">d:/songs/5.mp3</song>
-        <song mood="Relaxed" play="false">d:/songs/6.mp3</song>
+        <song mood="Relaxed" play="false">/home/pi/public/1.mp3</song>
+        <song mood="Angry" play="false">/home/pi/public/2.mp3</song>
+        <song mood="Sad" play="false">/home/pi/public/3.mp3</song>
+        <song mood="Angry" play="false">/home/pi/public/4.mp3</song>
+        <song mood="Happy" play="false">/home/pi/public/5.mp3</song>
+        <song mood="Angry" play="false">/home/pi/public/6.mp3</song>
+        <song mood="Relaxed" play="true">/home/pi/public/7.mp3</song>
+        <song mood="Happy" play="false">/home/pi/public/8.mp3</song>
+        <song mood="Angry" play="false">/home/pi/public/9.mp3</song>
+        <song mood="Relaxed" play="false">/home/pi/public/10.mp3</song>
+        <song mood="Happy" play="false">/home/pi/public/song.mp3</song>
+        <song mood="Excited" play="false">/home/pi/public/song.mp3</song>
     </songs>
 </root>

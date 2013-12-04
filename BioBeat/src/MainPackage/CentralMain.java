@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.tree.DefaultMutableTreeNode;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Elements;
@@ -26,23 +27,42 @@ import udp.datatransmission.DataTransmission;
  */
 public class CentralMain {
 
-    public final static String BASE_URL = "/home/pi/public/";
-    private final static String SONGS_XML_PATH = BASE_URL + "BioBeat_songs.xml";
-    private final static String MOODS_XML_PATH = BASE_URL + "BioBeat_moods.xml";
+//    public final static String BASE_URL = "/home/pi/public/";
+//    private final static String SONGS_XML_PATH = BASE_URL + "BioBeat_songs.xml";
+//    private final static String MOODS_XML_PATH = BASE_URL + "BioBeat_moods.xml";
     private ArrayList<String> moodsList;
     private Playlist playlist;
     private final GUIRunnable guiRunnable;
     private DataTransmission dt;
     ArrayList<Playlist.Song> songsToBePlayed;
+    int songCurrentIndex;
+    //////////////// Variables for testing purposes only
+    public final static String BASE_URL = "c:/";
+    private final static String SONGS_XML_PATH = BASE_URL + "BioBeat_songs.xml";
+    private final static String MOODS_XML_PATH = BASE_URL + "BioBeat_moods.xml";
+    //////////////// END OF TESTING VARIABLES ////////////////////////
 
     CentralMain() {
         Document mDoc = CentralMain.loadXml(MOODS_XML_PATH);
         populateMoodsList(mDoc);
-
         this.playlist = new Playlist(SONGS_XML_PATH);
+
+
         /* Create and display the form */
-        guiRunnable = new GUIRunnable(this);
+        guiRunnable = new GUIRunnable(new GUIController(this));
         guiRunnable.run();
+
+//        
+//        //just testing
+//        songsToBePlayed = playlist.getSongsWithMood(moodsList.get(0));
+//            try {
+//                playlist.setPlaySong(songsToBePlayed.get(0));
+//            } catch (Exception ex) {
+//                Logger.getLogger(CentralMain.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//            playlist.overwriteXmlFile();
+        //////////////////////////////////////////////////////////
+
 
         // Start UDP connection to recieve and send
         dt = new DataTransmission(new MyIncomingActionListener());
@@ -70,9 +90,9 @@ public class CentralMain {
 
     public void addSong(String name, String mood) {
         try {
-            this.playlist.addSong(CentralMain.BASE_URL + name, mood,false);
+            this.playlist.addSong(CentralMain.BASE_URL + name, mood, false);
             this.playlist.overwriteXmlFile();
-            this.guiRunnable.reloadSongsList();
+            this.guiRunnable.getSongListModel();
         } catch (Exception ex) {
             System.err.println(ex);
             CentralMain.displayErrorDialog("Unable to overwrite the XML.\nTry to restart the program.");
@@ -84,11 +104,47 @@ public class CentralMain {
         try {
             this.playlist.removeSong(song, mood);
             this.playlist.overwriteXmlFile();
-            this.guiRunnable.reloadSongsList();
+            this.guiRunnable.getSongListModel();
         } catch (Exception ex) {
             System.err.println(ex);
             CentralMain.displayErrorDialog("Ops, there was an error while trying to remove the song.\nPlease try again.");
         }
+    }
+
+    protected void nextSong() {
+
+        if (songsToBePlayed.size() == 0) {
+            return;
+        }
+        if (songCurrentIndex < songsToBePlayed.size() - 1) {
+            songCurrentIndex++;
+        } else {
+            songCurrentIndex = 0;
+        }
+        updateSongtoPlay();
+    }
+    
+    protected void prevSong(){
+        if (songsToBePlayed.size() == 0) {
+            return;
+        }
+        if (songCurrentIndex == 0) {
+            songCurrentIndex = songsToBePlayed.size()-1;
+        } else {
+            songCurrentIndex--;
+        }
+        updateSongtoPlay();
+    }
+
+    protected void updateSongtoPlay() {
+        try {
+            playlist.setPlaySong(songsToBePlayed.get(songCurrentIndex));
+            playlist.overwriteXmlFile();
+
+        } catch (Exception ex) {
+            CentralMain.displayErrorDialog("There was an error while setting the song to be played in the XML.\n this will affect the player");
+        }
+
     }
 
     protected static void copyFileUsingStream(File source, File dest) {
@@ -131,6 +187,68 @@ public class CentralMain {
     ///////////////////////////////////////////////////
     //            MAIN 
     ///////////////////////////////////////////////////
+    ////////////////////////////////////////////
+    /////           INNER GUI MVC CLASS
+    //////////////////////////////////////////
+    // the VIEW is in a runnable
+    class GUIRunnable implements Runnable {
+
+        GUI gui;
+        GUIController gc;
+
+        GUIRunnable(GUIController gc) {
+            super();
+            this.gc = gc;
+            SongListTreeModel loadSongsList = getSongListModel();
+            this.gui = new GUI(loadSongsList, this.gc);
+        }
+
+        private SongListTreeModel getSongListModel() {
+            DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Moods Playlist");
+            SongListTreeModel slTreeModel = new SongListTreeModel(rootNode, getMoodsList(), getPlaylist());
+            return slTreeModel;
+        }
+
+        @Override
+        public void run() {
+            if (this.gui == null) {
+                this.gui = new GUI(getSongListModel(), this.gc);
+                getSongListModel();
+            }
+
+            this.gui.setVisible(true);
+        }
+
+        public GUI getGUI() {
+            return this.gui;
+        }
+    }
+
+    //////////////////////////////////////////////////////
+    //             INCOMING CONNECTION LISTENER
+    ////////////////////////////////////////////////////
+    void sendMsg(int cmd) {
+        dt.sendCMD(cmd);
+    }
+
+    class MyIncomingActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            String actionCommand = e.getActionCommand();
+
+            System.out.println("recieved >> " + Integer.parseInt(actionCommand));
+
+            int mood_index = Integer.parseInt(actionCommand) - 1;
+
+            //repeat will occur every 20 seconds.. timer is workign in the monitor 
+            songsToBePlayed = playlist.getSongsWithMood(moodsList.get(mood_index));
+            songCurrentIndex = (int) Math.random() * songsToBePlayed.size();
+            updateSongtoPlay();
+        }
+    }
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -156,82 +274,7 @@ public class CentralMain {
         //</editor-fold>
 
         CentralMain CM = new CentralMain();
-    }
 
-    ////////////////////////////////////////////
-    /////           INNER CLASSES
-    //////////////////////////////////////////
-    class GUIRunnable implements Runnable {
 
-        GUI gui;
-        CentralMain centralMain;
-
-        GUIRunnable(CentralMain central) {
-            super();
-            this.centralMain = central;
-        }
-
-        private void reloadSongsList() {
-            gui.initSongsList();
-        }
-
-        @Override
-        public void run() {
-            this.gui = new GUI(this.centralMain);
-            this.gui.setVisible(true);
-        }
-
-        public GUI getGUI() {
-            return this.gui;
-        }
-    }
-
-    //////////////////////////////////////////////////////
-    //             INCOMING CONNECTION LISTENER
-    ////////////////////////////////////////////////////
-    void sendMsg(int CMD_PAUSE) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    class MyIncomingActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            String actionCommand = e.getActionCommand();
-
-            System.out.println("recieved >> " + Integer.parseInt(actionCommand));
-
-            int mood_index = Integer.parseInt(actionCommand) - 1;
-            
-            //repeat will occur every 20 seconds.. timer is workign in the monitor 
-            songsToBePlayed= playlist.getSongsWithMood(moodsList.get(mood_index));
-            int random = (int)Math.random() * songsToBePlayed.size();
-            try {
-                playlist.setPlaySong(songsToBePlayed.get(random));
-                playlist.overwriteXmlFile();
-    //            playlist.Song get = songsToBePlayed.get(random);
-                
-                //            switch (Integer.parseInt(actionCommand)) {
-                //                case DataTransmission.MOOD_ANGRY:
-                //
-                //                    break;
-                //                case DataTransmission.MOOD_EXCITED:
-                //                    break;
-                //                case DataTransmission.MOOD_HAPPY:
-                //                    break;
-                //                case DataTransmission.MOOD_RELAXED:
-                //                    break;
-                //                case DataTransmission.MOOD_SAD:
-                //                    break;
-                //                default:
-                //                    CentralMain.displayErrorDialog("Unrecognized message recieved from the sensors.\n No harm done.");
-                //                    break;
-                //           
-                //
-            } catch (Exception ex) {
-                CentralMain.displayErrorDialog("There was an error while setting the song to be played in the XML.\n this will affect the player");
-            }
-        }
     }
 }
