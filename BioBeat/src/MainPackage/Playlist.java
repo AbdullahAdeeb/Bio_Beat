@@ -19,31 +19,30 @@ import nu.xom.Serializer;
  * @author lenovo212
  */
 public class Playlist {
-
+    
     ArrayList<Song> songsList;
     private Document xSongs;
-    private Element songsElement;
+    private Element songsElement;  // this is the <songs> wrapper tag that contains all the song elements
     private String songsXmlPath;
-
+    
     Playlist(String xmlPath) {
-
         this.songsXmlPath = xmlPath;
         this.xSongs = CentralMain.loadXml(this.songsXmlPath);
         loadSongs();
     }
-
+    
     private String loadSongs() {
         Element rootElement = xSongs.getRootElement();
-
+        
         this.songsList = new ArrayList<Song>();
-        this.songsElement = rootElement.getChildElements().get(0); // 0 to get the <songs>    otherwise use 1 to get <lights>
+        this.songsElement = rootElement.getChildElements().get(0); // 0 to get the <songs>   
 
         Elements songs = songsElement.getChildElements();
         String errorSongs = "";
         for (int i = 0; i < songs.size(); i++) {
             Element s = songs.get(i);
             try {
-                this.songsList.add(new Song(s.getValue(), s.getAttributeValue("mood"), true));
+                this.songsList.add(new Song(s.getValue(), s.getAttributeValue("mood"), false, true));
             } catch (Exception ex) {
                 errorSongs = errorSongs + s.getValue() + "\n";
             }
@@ -51,19 +50,19 @@ public class Playlist {
         String msg = "The following songs were not found:\n" + errorSongs;
         if (!errorSongs.equals("")) {
             CentralMain.displayErrorDialog(msg);
-
+            
         }
-
+        
         return errorSongs;
         //TODO add for loop to load the lights (if we ever decide to implement it)
     }
-
-    protected void addSong(String path, String mood) throws Exception {
-        Song newSong = new Song(path, mood, false);
+    
+    protected void addSong(String path, String mood, boolean play) throws Exception {
+        Song newSong = new Song(path, mood, play, false);
         this.songsList.add(newSong);
         this.songsElement.appendChild(newSong);
     }
-
+    
     public ArrayList<Song> getSongsWithMood(String mood) {
         ArrayList<Song> filteredArray = new ArrayList<Song>();
         for (int i = 0; i < this.songsList.size(); i++) {
@@ -75,7 +74,7 @@ public class Playlist {
         }
         return filteredArray;
     }
-
+    
     public void removeSong(String song, String mood) throws Exception {
         int songIndex = getSongIndex(song, mood);
         int songDocIndex = getSongIndexinDoc(song, mood);
@@ -84,6 +83,26 @@ public class Playlist {
         }
         this.songsList.remove(songIndex);
         this.songsElement.getChildElements().get(songDocIndex).detach();
+    }
+    
+    public void setPlaySong(Song song) throws Exception {
+        int songInPlayIndex = findSongInPlay();
+        Elements s = this.songsElement.getChildElements();
+        s.get(songInPlayIndex).addAttribute(new Attribute("play", "false"));
+        
+        int nextplaySongIndex = getSongIndexinDoc(song.getName(), song.getMood());
+        s.get(nextplaySongIndex).addAttribute(new Attribute("play","true"));
+    }
+
+    private int findSongInPlay() {
+        Elements s = this.songsElement.getChildElements();
+        for (int i = 0; i < s.size(); i++) {
+            if (s.get(i).getAttribute("play").equals("true")) {
+                return i;
+            }
+        }
+        return -1;
+        
     }
 
     public void overwriteXmlFile() {
@@ -98,7 +117,7 @@ public class Playlist {
             System.err.println(ex);
         }
     }
-
+    
     private int getSongIndex(String name, String mood) {
         System.out.println(name + "||" + mood);
         for (int i = 0; i < this.songsList.size(); i++) {
@@ -106,10 +125,10 @@ public class Playlist {
                 return i;
             }
         }
-
+        
         return -1;
     }
-
+    
     private int getSongIndexinDoc(String name, String mood) {
         Elements s = this.songsElement.getChildElements();
         for (int i = 0; i < s.size(); i++) {
@@ -120,7 +139,7 @@ public class Playlist {
         }
         return -1;
     }
-
+    
     public ArrayList<String> toArray() {
         ArrayList<String> out = new ArrayList<String>();
         for (int i = 0; i < this.songsList.size(); i++) {
@@ -128,7 +147,7 @@ public class Playlist {
         }
         return out;
     }
-
+    
     public String toString() {
         String out = this.songsElement.toXML();
         return out;
@@ -138,11 +157,11 @@ public class Playlist {
 //////////////////////////////////////////////////////
 
     class Song extends Element {
-
+        
         private File file;
         private int id;
-
-        Song(String path, String m, boolean exist) throws Exception {
+        
+        Song(String path, String m, boolean p, boolean exist) throws Exception {
             super("song");
             this.appendChild(path);
             this.file = new File(path);
@@ -150,14 +169,21 @@ public class Playlist {
                 throw new Exception(path);
             }
             this.addAttribute(new Attribute("mood", m));
-//            System.out.println("song is read with <" + path + "> and mood <" + m + ">");
-
+            this.addAttribute(new Attribute("play", String.valueOf(p)));
         }
-
+        
         public File getFile() {
             return file;
         }
-
+        
+        public String getName() {
+            return this.file.getName();
+        }
+        
+        public Song(Element elmnt) {
+            super(elmnt);
+        }
+        
         public String getMood() {
             return this.getAttributeValue("mood");
         }

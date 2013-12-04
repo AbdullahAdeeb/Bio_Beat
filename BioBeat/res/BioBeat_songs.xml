@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
     <songs>
-        <song mood="relax" play="false">d:/songs/beethoven.mp3</song>
-        <song mood="relax" play="false">./res/songs/fakesong.mp3</song>
-        <song mood="resting" play="false">d:/songs/beethoven.mp3</song>
-        <song mood="resting" play="false">D:/songs/22.mp3</song>
-        <song mood="excited" play="false">d:/songs/5.mp3</song>
-        <song mood="resting" play="false">d:/songs/5.mp3</song>
-        <song mood="cooldown" play="false">d:/songs/6.mp3</song>
+        <song mood="Relaxed" play="false">d:/songs/beethoven.mp3</song>
+        <song mood="Angry" play="false">./res/songs/fakesong.mp3</song>
+        <song mood="Sad" play="false">d:/songs/beethoven.mp3</song>
+        <song mood="Angry" play="false">D:/songs/22.mp3</song>
+        <song mood="Happy" play="false">d:/songs/5.mp3</song>
+        <song mood="Angry" play="false">d:/songs/5.mp3</song>
+        <song mood="Relaxed" play="false">d:/songs/6.mp3</song>
     </songs>
 </root>
