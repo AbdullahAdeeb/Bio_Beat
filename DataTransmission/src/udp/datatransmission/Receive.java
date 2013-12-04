@@ -62,7 +62,7 @@ public class Receive implements Runnable
 			}			
 			//While there is a packet that has yet to be read by DataTransmission
 			newPacketInfo = receivePacket;
-			al.actionPerformed(new ActionEvent(this,0,String.valueOf(DataTransmission.returnCommand(newPacketInfo))));
+			al.actionPerformed(new ActionEvent(this,0,String.valueOf(DataTransmission.getMood(newPacketInfo))));
 		}//end listen for packets
 		
 	}
