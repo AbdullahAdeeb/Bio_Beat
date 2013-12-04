@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <root>
 	<moods>
-		<mood type = "Relaxed" id = "1">resting</mood>
-		<mood type = "Excited" id = "2">relax</mood>
-		<mood type = "Sad" id = "3">excited</mood>
-		<mood type = "Happy" id = "4">angry</mood>
-		<mood type = "Angry" id = "5">cooldown</mood>
+		<mood type = "Relaxed" id = "1">Relaxed</mood>
+		<mood type = "Excited" id = "2">Excited</mood>
+		<mood type = "Sad" id = "3">Sad</mood>
+		<mood type = "Happy" id = "4">Happy</mood>
+		<mood type = "Angry" id = "5">Angry</mood>
 	</moods>
 </root>

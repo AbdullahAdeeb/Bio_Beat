@@ -86,10 +86,16 @@ public class Playlist {
     }
     
     public void setPlaySong(Song song) throws Exception {
+        System.out.println("setting all songs to false");
         int songInPlayIndex = findSongInPlay();
+        if (songInPlayIndex == -1) {
+            System.err.println("all songs were false");
+            return;
+        }
         Elements s = this.songsElement.getChildElements();
         s.get(songInPlayIndex).addAttribute(new Attribute("play", "false"));
         
+        System.out.println("setting one song to true");
         int nextplaySongIndex = getSongIndexinDoc(song.getName(), song.getMood());
         s.get(nextplaySongIndex).addAttribute(new Attribute("play","true"));
     }
@@ -97,7 +103,8 @@ public class Playlist {
     private int findSongInPlay() {
         Elements s = this.songsElement.getChildElements();
         for (int i = 0; i < s.size(); i++) {
-            if (s.get(i).getAttribute("play").equals("true")) {
+            System.out.println(s.get(i).getAttribute("play").getValue());
+            if (s.get(i).getAttribute("play").getValue().equals("true")) {
                 return i;
             }
         }
@@ -114,7 +121,8 @@ public class Playlist {
             serializer.setMaxLength(64);
             serializer.write(xSongs);
         } catch (IOException ex) {
-            System.err.println(ex);
+            CentralMain.displayErrorDialog("There was an error while trying to update the songs list");
+            System.out.println(ex);
         }
     }
     

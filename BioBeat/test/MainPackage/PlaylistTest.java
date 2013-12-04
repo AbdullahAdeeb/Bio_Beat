@@ -16,24 +16,7 @@ public class PlaylistTest {
     
     public static String TESTCreate_SONG_XML_PATH = "res/TestCreate_BioBeat_songs.xml";
 
-//    public PlaylistTest() {
-//    }
-//    
-//    @BeforeClass
-//    public static void setUpClass() {
-//    }
-//    
-//    @AfterClass
-//    public static void tearDownClass() {
-//    }
-//    
-//    @Before
-//    public void setUp() {
-//    }
-//    
-//    @After
-//    public void tearDown() {
-//    }
+
     @Test
     public void testPlayListConstructor() throws Exception {
         System.out.println("testing playlist constructor >>");
@@ -85,7 +68,7 @@ public class PlaylistTest {
         
         Playlist instance = new Playlist(TESTCreate_SONG_XML_PATH);
         try {
-            instance.addSong(newSongPath, newSongMood);
+            instance.addSong(newSongPath, newSongMood,false);
         } catch (Exception ex) {
             fail("add song threw an exception");
         }
@@ -127,20 +110,7 @@ public class PlaylistTest {
         
     }
 
-//    /**
-//     * Test of getSongsWithMood method, of class Playlist.
-//     */
-//    @Test
-//    public void testGetSongsWithMood() {
-//        System.out.println("getSongsWithMood");
-//        String mood = "";
-//        Playlist instance = null;
-//        ArrayList expResult = null;
-//        ArrayList result = instance.getSongsWithMood(mood);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
+
     /**
      * Test of removeSong method, of class Playlist.
      */
