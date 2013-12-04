@@ -1,4 +1,12 @@
-# importing important directories to ensure proper functioning 
+##############################
+####					  ####
+#### Class Player Pi	  ####
+#### Primary Contributor: ####
+#### Tejas Patil 100823713####
+####					  ####
+##############################
+
+# importing important directories 
 
 import socket
 import thread
@@ -27,23 +35,33 @@ def commandReceived(object):
 		# the play feature will be accessed 
 		else:
 			play()
-
+			
+	# if the user selects pause the song will temporarily hault playback
 	elif(binascii.hexlify(x4) == b'02'):
 		pause()
+	
 	elif(binascii.hexlify(x4) == b'03'):
 		previous()
+		
 	elif(binascii.hexlify(x4) == b'04'):
 		next()
+		
 	elif(binascii.hexlify(x4) == b'05'):
 		print 'Command does not exist'
+		
+	# user selects the increase volume option
 	elif(binascii.hexlify(x4) == b'06'):
 		volinc()
+		
+	# user selects the decrease volume option
 	elif(binascii.hexlify(x4) == b'07'):
 		voldec()
+	
+	# stop the playback of the song
 	elif(binascii.hexlify(x4) == b'08'):
 		stop()
 	else:
-		print "wrong command"
+		print "Invalid command"
 #	else if(binascii.hexlify(x4) == b'09'):
 #		mood(x5)
 
@@ -60,13 +78,16 @@ def receive():
 
 # play the song
 def play():
-
+	
+	# if the song is paused then parse the XML to find a song which can be played
 	if(isPaused == 0):	
 		song = xmlParser(xmlDirectory)
-		print song
+		print "Current song playing" + song
 		pygame.mixer.music.load(song)
 		pygame.mixer.music.play(0)
 	else:
+	
+	# else pause the song 
 		print "Paused in Play"
 		pause()
 #		sys.exit(0)
@@ -75,6 +96,8 @@ def play():
 def pause():
 
 	global isPaused
+	
+	# if the song is not paused then pause it 
 	if (isPaused == 0):
 		pygame.mixer.music.pause()
 		#songPosition = pygame.mixer.music.get_pos()
@@ -82,6 +105,7 @@ def pause():
 		print "Paused"
 	#	sys.exit(0)
 
+	# unpause the song that has been temperarily paused
 	else: 
 		pygame.mixer.music.unpause()
 		isPaused = 0

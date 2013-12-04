@@ -1,0 +1,51 @@
+//Samba file sharing linux commands:
+
+//Installing
+>apt-get install samba samba-common-bin
+
+//Setup
+
+	//Accesible by any user on network
+	//Accesible by anyone since this is a safe network
+	>smbpasswd -an nobody;
+
+
+	//modify Samba configuration file (samba.conf):
+	//global settings
+
+	[global]
+	security = user
+	guest account = nobody
+	map to guest = bad password
+
+	//settings for specific shared folder
+	[BioBeat]
+	comment = BioBeat Share
+	browseable = yes
+	path = /path/to/songs
+	writable = no
+	guest ok = yes
+
+
+//Start samba
+>service samba start
+
+
+
+//Samba file mounting linux commands
+
+//Install
+>sudo apt-get install cifs-utils
+
+//Setup
+
+	//Make directory
+	sudo mkdir /path/to/local
+
+	//Edit /etc/fstab file
+	//Add line to bottom:
+
+	smb://<IP Address>10.0.0.43/path/to/songs<same as file sharing above> /path/to/local cifs guest,uid=1000,iocharest=utf8 0 0
+
+//Mount shared
+sudo mount -a 
