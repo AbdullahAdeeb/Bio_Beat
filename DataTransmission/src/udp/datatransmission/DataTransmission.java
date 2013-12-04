@@ -364,7 +364,7 @@ public class DataTransmission
 		return 0;
 	}
 	//get command will return a command if there are any, if not it will return 0
-	public int getMood(DatagramPacket temp)
+	public static int getMood(DatagramPacket temp)
 	{
 		return temp.getData()[4];
 		
