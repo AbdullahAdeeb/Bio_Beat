@@ -17,29 +17,32 @@ import nu.xom.Document;
 import nu.xom.Elements;
 import udp.datatransmission.DataTransmission;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
  *
- * @author lenovo212
+ * @author Abdullah Adeeb
+ */
+
+/*
+ * This class is starts all other classes and should be ran first
+ * it will create the gui and provide all the instances needed
+ * it will also create the playlist
+ * it also holds static methods that helps in copying files or parsing xml files
  */
 public class CentralMain {
 
-//    public final static String BASE_URL = "/home/pi/public/";
-//    private final static String SONGS_XML_PATH = BASE_URL + "BioBeat_songs.xml";
-//    private final static String MOODS_XML_PATH = BASE_URL + "BioBeat_moods.xml";
+    public final static String BASE_URL = "/home/pi/public/";
+    private final static String SONGS_XML_PATH = BASE_URL + "BioBeat_songs.xml";
+    private final static String MOODS_XML_PATH = BASE_URL + "BioBeat_moods.xml";
     private ArrayList<String> moodsList;
     private Playlist playlist;
     private final GUIRunnable guiRunnable;
     private DataTransmission dt;
     ArrayList<Playlist.Song> songsToBePlayed;
     int songCurrentIndex;
-    //////////////// Variables for testing purposes only
-    public final static String BASE_URL = "c:/";
-    private final static String SONGS_XML_PATH = BASE_URL + "BioBeat_songs.xml";
-    private final static String MOODS_XML_PATH = BASE_URL + "BioBeat_moods.xml";
+    //////////////// Variables for testing purposes only /// TO RUN ON PC NOT ON PI
+//    public final static String BASE_URL = "c:/";
+//    private final static String SONGS_XML_PATH = BASE_URL + "BioBeat_songs.xml";
+//    private final static String MOODS_XML_PATH = BASE_URL + "BioBeat_moods.xml";
     //////////////// END OF TESTING VARIABLES ////////////////////////
 
     CentralMain() {
@@ -52,22 +55,13 @@ public class CentralMain {
         guiRunnable = new GUIRunnable(new GUIController(this));
         guiRunnable.run();
 
-//        
-//        //just testing
-//        songsToBePlayed = playlist.getSongsWithMood(moodsList.get(0));
-//            try {
-//                playlist.setPlaySong(songsToBePlayed.get(0));
-//            } catch (Exception ex) {
-//                Logger.getLogger(CentralMain.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//            playlist.overwriteXmlFile();
-        //////////////////////////////////////////////////////////
-
-
         // Start UDP connection to recieve and send
         dt = new DataTransmission(new MyIncomingActionListener());
     }
 
+    /*
+     * This methodc load an XML file and return a document object of it
+     */
     public static Document loadXml(String path) {
         Builder xBuilder = new Builder(false);
         Document xDoc = null;
@@ -80,6 +74,10 @@ public class CentralMain {
         return xDoc;
     }
 
+    /*
+     * load the Mood list to an moodList field 
+     * must be called by central main before starting the GUI
+     */
     private void populateMoodsList(Document moodsDoc) {
         this.moodsList = new ArrayList<String>();
         Elements moods = moodsDoc.getRootElement().getChildElements().get(0).getChildElements();
@@ -88,6 +86,10 @@ public class CentralMain {
         }
     }
 
+    /*
+     * this method add a song to the playlist and overwrites the xml
+     * this will also modify the songTreeModel in the GUI
+     */
     public void addSong(String name, String mood) {
         try {
             this.playlist.addSong(CentralMain.BASE_URL + name, mood, false);
@@ -100,6 +102,10 @@ public class CentralMain {
         }
     }
 
+    /*
+     * This method will remove a song from the playlist then overwrite the XML file
+     * it will also modify the SongtreeModel to update the GUI
+     */
     public void removeSong(String song, String mood) {
         try {
             this.playlist.removeSong(song, mood);
@@ -111,6 +117,11 @@ public class CentralMain {
         }
     }
 
+    /*
+     * this method is called when the next song button in the GUI is clicked
+     * it will modify the current song  to be played in the XML
+     * then it will send a command through udp to the playerPI to update
+     */
     protected void nextSong() {
 
         if (songsToBePlayed == null || songsToBePlayed.size() == 0) {
@@ -124,6 +135,11 @@ public class CentralMain {
         updateSongtoPlay();
     }
 
+       /*
+     * this method is called when the prev song button in the GUI is clicked
+     * it will modify the current song  to be played in the XML with the next song in the array with the same mood
+     * then it will send a command through udp to the playerPI to update
+     */
     protected void prevSong() {
         if (songsToBePlayed == null || songsToBePlayed.size() == 0) {
             return;
@@ -136,6 +152,9 @@ public class CentralMain {
         updateSongtoPlay();
     }
 
+    /*
+     * this method will overwite the xml to reflect the new song that should be played
+     */
     protected void updateSongtoPlay() {
         try {
             Playlist.Song song = songsToBePlayed.get(songCurrentIndex);
@@ -148,6 +167,10 @@ public class CentralMain {
 
     }
 
+    /*
+     * this method is used to copy the song files when it's added 
+     * all the songs should be stored in the base directory of the system, which is the public folder representing the NAS server
+     */
     protected static void copyFileUsingStream(File source, File dest) {
         InputStream is = null;
         OutputStream os = null;
@@ -185,9 +208,7 @@ public class CentralMain {
                 JOptionPane.ERROR_MESSAGE);
     }
 
-    ///////////////////////////////////////////////////
-    //            MAIN 
-    ///////////////////////////////////////////////////
+
     ////////////////////////////////////////////
     /////           INNER GUI MVC CLASS
     //////////////////////////////////////////
@@ -253,7 +274,10 @@ public class CentralMain {
             updateSongtoPlay();
         }
     }
-
+    
+    ///////////////////////////////////////////////////
+    //            MAIN 
+    ///////////////////////////////////////////////////
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -277,9 +301,7 @@ public class CentralMain {
             java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
         CentralMain CM = new CentralMain();
-
 
     }
 }

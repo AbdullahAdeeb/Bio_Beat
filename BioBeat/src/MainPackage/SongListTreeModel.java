@@ -10,13 +10,16 @@ import javax.swing.tree.DefaultTreeModel;
 
 /**
  *
- * @author lenovo212
+ * @author Abdullah Adeeb
  */
 public class SongListTreeModel extends DefaultTreeModel {
 
     private ArrayList<String> moods;
     private Playlist pl;
 
+    /*
+     * this constructor will create a songs tree model to be used in the GUI
+     */
     SongListTreeModel(DefaultMutableTreeNode rootNode, ArrayList<String> moods, Playlist pl) {
         super(rootNode, true);
         this.moods = moods;
@@ -32,7 +35,9 @@ public class SongListTreeModel extends DefaultTreeModel {
         }
 
     }
-
+    /////////////////////
+    // GETTER METHODS
+    //////////////////
     public ArrayList<String> getMoods() {
         return moods;
     }

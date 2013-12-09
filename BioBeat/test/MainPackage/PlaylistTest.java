@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author lenovo212
+ * @author Abdullah Adeeb
  */
 public class PlaylistTest {
     

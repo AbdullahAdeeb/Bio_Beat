@@ -10,12 +10,15 @@ import udp.datatransmission.DataTransmission;
 
 /**
  *
- * @author lenovo212
+ * @author Abdullah Adeeb
  */
 class GUIController implements ActionListener {
 
     CentralMain central;
-
+/*
+ * this class will need an instance of the main central to create a bridge between the GUI and the central
+ * the purpose of this class is to make it clear where View is from the Controller which used to be the Central
+ */
     public GUIController(CentralMain cent) {
         this.central = cent;
     }
@@ -32,28 +35,18 @@ class GUIController implements ActionListener {
             jVolUpActionPerformed(e);
         }
     }
-
+    ////////////////////////////////////////////
+    // CALLBACK METHODS CALLED FROM THE GUI
+    ////////////////////////////////////////////
     private void jPlayButtonActionPerformed(java.awt.event.ActionEvent evt) {
-
+        // nothing needed for now in the callback method
+        // all the work is handeled by the GUI, because there is GUI changes that should run on the EDT
+        
     }
 
     private void jAddButtonActionPerformed(java.awt.event.ActionEvent evt) {
-//        File f = new File(jPathField.getText());
-//        if (!f.isFile() || !f.exists()) {
-//            this.controller.displayErrorDialog("The song file path specified is invalid. \nmake sure the song is still there");
-//            return;
-//        }
-//
-//        this.controller.copyFileUsingStream(f, new File(CentralMain.BASE_URL + f.getName()));
-//        this.controller.addSong(f.getName(), (String) jMoodsList.getSelectedItem());
-    }
-
-    public CentralMain getCentral() {
-        return this.central;
-    }
-
-    public void sendMsg(int cmd) {
-        this.central.sendMsg(cmd);
+        // nothing needed for now in the callback method
+        // all the work is handeled by the GUI, because there is GUI changes that should run on the EDT
     }
 
     private void jNextButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -73,6 +66,18 @@ class GUIController implements ActionListener {
     private void jVolDownActionPerformed(java.awt.event.ActionEvent evt) {
         sendMsg(DataTransmission.CMD_VOLDEC);
     }
+
+    ///////////////////////////////////////
+    //  MEHTODS TO CENTRAL
+    //////////////////////////////////////
+    public CentralMain getCentral() {
+        return this.central;
+    }
+
+    public void sendMsg(int cmd) {
+        this.central.sendMsg(cmd);
+    }
+
 
     void removeSong(String song, String mood) {
         this.central.removeSong(song, mood);
