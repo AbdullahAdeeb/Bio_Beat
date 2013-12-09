@@ -13,11 +13,4 @@
         <song mood="resting">D:/songs/22.mp3</song>
         <song mood="excited">d:/songs/5.mp3</song>
     </songs>
-    <lights>
-        <light mood="resting" portNumber="01" id="1"/>
-        <light mood="relax" portNumber="02" id="2"/>
-        <light mood="excited" portNumber="03" id="3"/>
-        <light mood="angry" portNumber="04" id="4"/>
-        <light mood="cooldown" portNumber="05" id="5"/>
-    </lights>
 </root>

@@ -27,9 +27,9 @@ import udp.datatransmission.DataTransmission;
  */
 public class CentralMain {
 
-    public final static String BASE_URL = "/home/pi/public/";
-    private final static String SONGS_XML_PATH = BASE_URL + "BioBeat_songs.xml";
-    private final static String MOODS_XML_PATH = BASE_URL + "BioBeat_moods.xml";
+//    public final static String BASE_URL = "/home/pi/public/";
+//    private final static String SONGS_XML_PATH = BASE_URL + "BioBeat_songs.xml";
+//    private final static String MOODS_XML_PATH = BASE_URL + "BioBeat_moods.xml";
     private ArrayList<String> moodsList;
     private Playlist playlist;
     private final GUIRunnable guiRunnable;
@@ -37,9 +37,9 @@ public class CentralMain {
     ArrayList<Playlist.Song> songsToBePlayed;
     int songCurrentIndex;
     //////////////// Variables for testing purposes only
-//    public final static String BASE_URL = "c:/";
-//    private final static String SONGS_XML_PATH = BASE_URL + "BioBeat_songs.xml";
-//    private final static String MOODS_XML_PATH = BASE_URL + "BioBeat_moods.xml";
+    public final static String BASE_URL = "c:/";
+    private final static String SONGS_XML_PATH = BASE_URL + "BioBeat_songs.xml";
+    private final static String MOODS_XML_PATH = BASE_URL + "BioBeat_moods.xml";
     //////////////// END OF TESTING VARIABLES ////////////////////////
 
     CentralMain() {
