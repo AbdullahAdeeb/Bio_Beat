@@ -1,4 +1,16 @@
+<<<<<<< HEAD
 # importing important directories to ensure proper functioning 
+=======
+##############################
+####			  ####
+#### Class Player Pi	  ####
+#### Primary Contributor: ####
+#### Tejas Patil 100823713####
+####			  ####
+##############################
+
+# importing important directories 
+>>>>>>> f35d1112730f5ba881bd23c395a8c11683f987da
 
 import socket
 import thread
@@ -27,6 +39,7 @@ def commandReceived(object):
 		# the play feature will be accessed 
 		else:
 			play()
+<<<<<<< HEAD
 
 	elif(binascii.hexlify(x4) == b'02'):
 		pause()
@@ -44,6 +57,35 @@ def commandReceived(object):
 		stop()
 	else:
 		print "wrong command"
+=======
+			
+	# if the user selects pause the song will temporarily hault playback
+	elif(binascii.hexlify(x4) == b'02'):
+		pause()
+	
+	elif(binascii.hexlify(x4) == b'03'):
+		previous()
+		
+	elif(binascii.hexlify(x4) == b'04'):
+		next()
+		
+	elif(binascii.hexlify(x4) == b'05'):
+		print 'Command does not exist'
+		
+	# user selects the increase volume option
+	elif(binascii.hexlify(x4) == b'06'):
+		volinc()
+		
+	# user selects the decrease volume option
+	elif(binascii.hexlify(x4) == b'07'):
+		voldec()
+	
+	# stop the playback of the song
+	elif(binascii.hexlify(x4) == b'08'):
+		stop()
+	else:
+		print "Invalid command"
+>>>>>>> f35d1112730f5ba881bd23c395a8c11683f987da
 #	else if(binascii.hexlify(x4) == b'09'):
 #		mood(x5)
 
@@ -60,6 +102,7 @@ def receive():
 
 # play the song
 def play():
+<<<<<<< HEAD
 
 	if(isPaused == 0):	
 		song = xmlParser(xmlDirectory)
@@ -67,6 +110,18 @@ def play():
 		pygame.mixer.music.load(song)
 		pygame.mixer.music.play(0)
 	else:
+=======
+	
+	# if the song is paused then parse the XML to find a song which can be played
+	if(isPaused == 0):	
+		song = xmlParser(xmlDirectory)
+		print "Current song playing" + song
+		pygame.mixer.music.load(song)
+		pygame.mixer.music.play(0)
+	else:
+	
+	# else pause the song 
+>>>>>>> f35d1112730f5ba881bd23c395a8c11683f987da
 		print "Paused in Play"
 		pause()
 #		sys.exit(0)
@@ -75,6 +130,11 @@ def play():
 def pause():
 
 	global isPaused
+<<<<<<< HEAD
+=======
+	
+	# if the song is not paused then pause it 
+>>>>>>> f35d1112730f5ba881bd23c395a8c11683f987da
 	if (isPaused == 0):
 		pygame.mixer.music.pause()
 		#songPosition = pygame.mixer.music.get_pos()
@@ -82,6 +142,10 @@ def pause():
 		print "Paused"
 	#	sys.exit(0)
 
+<<<<<<< HEAD
+=======
+	# unpause the song that has been temperarily paused
+>>>>>>> f35d1112730f5ba881bd23c395a8c11683f987da
 	else: 
 		pygame.mixer.music.unpause()
 		isPaused = 0
@@ -146,7 +210,11 @@ def stop():
 	
 
 # IP address to receive requests 
+<<<<<<< HEAD
 UDP_MyIP = "10.0.0.43"
+=======
+UDP_MyIP = "127.0.0.1"
+>>>>>>> f35d1112730f5ba881bd23c395a8c11683f987da
 
 # Port for UDP communication
 UDP_Port = 5000

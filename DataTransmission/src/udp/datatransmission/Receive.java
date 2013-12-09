@@ -6,6 +6,10 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
+<<<<<<< HEAD
+=======
+/*******Written By Drew Gascoigne 100827090******/
+>>>>>>> f35d1112730f5ba881bd23c395a8c11683f987da
 
 public class Receive implements Runnable
 {
